@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TransactIQ | Payment Intelligence</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2e;--panel2:#18233b;--line:#263550;--text:#edf3ff;--muted:#9aabc7;--blue:#6ea8fe;--green:#51d6a3;--red:#ff7185;--amber:#ffc66d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#17284a 0,transparent 35%),var(--bg);color:var(--text);font:14px Inter,system-ui,Segoe UI,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:22px 4vw;border-bottom:1px solid var(--line);position:sticky;top:0;background:#0b1020eF;backdrop-filter:blur(14px);z-index:3}
+.brand{font-size:22px;font-weight:800;letter-spacing:-.7px}.brand span{color:var(--blue)}.sub{color:var(--muted);font-size:12px;margin-top:3px}
+.pill{border:1px solid #31517d;border-radius:20px;padding:7px 12px;color:#a9caff;font-size:11px}
+main{max-width:1440px;margin:auto;padding:30px 4vw 60px}.top{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}
+h1{font-size:28px;margin:0 0 7px;letter-spacing:-.8px}.muted{color:var(--muted)}button{background:var(--blue);color:#071326;border:0;border-radius:9px;padding:10px 15px;font-weight:700;cursor:pointer}button.secondary{background:#223451;color:var(--text);border:1px solid #385071}button.danger{background:#482334;color:#ffb3bf}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric,.panel{background:linear-gradient(145deg,#151f35,#10182a);border:1px solid var(--line);border-radius:15px;padding:18px}
+.metric label{color:var(--muted);font-size:12px}.metric strong{display:block;font-size:27px;margin:10px 0 2px}.metric small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-top:18px}.panel h2{font-size:16px;margin:0 0 15px}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--muted);font-weight:500;font-size:11px;padding:10px;border-bottom:1px solid var(--line)}td{padding:13px 10px;border-bottom:1px solid #202d45;font-size:12px}tr:last-child td{border:0}
+.tag{padding:5px 8px;border-radius:20px;font-size:10px;background:#263752;color:#c8dcff;white-space:nowrap}.tag.good{background:#153c36;color:#7be5bd}.tag.warn{background:#49391f;color:#ffd48a}.tag.bad{background:#482434;color:#ff9eae}
+form{display:grid;grid-template-columns:1fr 1fr;gap:10px}input,select{width:100%;background:#0b1425;color:var(--text);border:1px solid #2a3b59;border-radius:8px;padding:10px;margin-top:5px}label{font-size:11px;color:var(--muted)}.full{grid-column:1/-1}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{padding:7px 9px;font-size:11px}
+.notice{margin-top:16px;border:1px solid #4a412b;background:#2b251a;color:#e9cb91;padding:12px;border-radius:10px;font-size:11px;line-height:1.5}
+pre{white-space:pre-wrap;word-break:break-word;color:#bdd0ee;font-size:11px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}@media(max-width:560px){header{padding:16px}.top{align-items:start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}main{padding:22px 14px}td,th{padding:9px 5px}}
+</style></head><body>
+<header><div><div class="brand">Transact<span>IQ</span></div><div class="sub">CROSS-BORDER PAYMENT INTELLIGENCE</div></div><div class="pill">● SIMULATION ENVIRONMENT</div></header>
+<main><div class="top"><div><h1>Payment Operations</h1><div class="muted">Monitor transactions, risk signals and exception workflows.</div></div><div class="actions"><button class="secondary" onclick="seed()">Load demo data</button><button onclick="refresh()">Refresh dashboard</button></div></div>
+<section class="grid">
+<div class="metric"><label>Total transactions</label><strong id="total">—</strong><small>Recorded payment requests</small></div>
+<div class="metric"><label>Total payment value</label><strong id="value">—</strong><small>Original transaction currencies</small></div>
+<div class="metric"><label>High / critical risk</label><strong id="risk">—</strong><small>Require closer review</small></div>
+<div class="metric"><label>Pending approval</label><strong id="pending">—</strong><small>Human review queue</small></div></section>
+<div class="layout"><section class="panel"><h2>Recent transactions</h2><div style="overflow:auto"><table><thead><tr><th>REFERENCE / BENEFICIARY</th><th>AMOUNT</th><th>RISK</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="rows"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></section>
+<section class="panel"><h2>Create payment request</h2><form id="paymentForm">
+<div><label>Beneficiary</label><input name="beneficiary" required value="Acme Global Ltd"></div>
+<div><label>Destination country (ISO)</label><input name="country" maxlength="2" required value="US"></div>
+<div><label>Amount</label><input name="amount" type="number" min="1" step=".01" required value="15000"></div>
+<div><label>Currency</label><select name="currency"><option>EUR</option><option>USD</option><option>GBP</option><option>INR</option><option>AED</option></select></div>
+<div class="full"><label>Account identifier</label><input name="account_identifier" required value="US123456789"></div>
+<div class="full"><label>Payment purpose</label><input name="purpose" required value="Software services"></div>
+<div><label>Country risk (0–1)</label><input name="country_risk" type="number" min="0" max="1" step=".01" value=".12"></div>
+<div><label>Corridor failure rate (0–1)</label><input name="corridor_failure_rate" type="number" min="0" max="1" step=".01" value=".04"></div>
+<div><label>Transaction frequency</label><input name="transaction_frequency" type="number" min="0" value="3"></div>
+<div><label>New beneficiary</label><select name="is_new_beneficiary"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div class="full"><button style="width:100%">Assess & create payment</button></div></form><div id="result"></div></section></div>
+<div class="layout"><section class="panel"><h2>Audit trail</h2><div id="audit" class="muted">Loading…</div></section><section class="panel"><h2>How TransactIQ decides</h2><p class="muted" style="line-height:1.7">A Random Forest model estimates transaction risk from six synthetic features. Deterministic policy rules can pause high-value, mismatched or restricted-destination payments. SHAP contributions are returned when available; otherwise feature importance is shown.</p><div class="notice">Educational prototype only. No real funds are transferred. Country restrictions, currency conversion and provider performance are illustrative demo rules, not live regulatory or market data.</div></section></div>
+</main>
+<script>
+const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(n||0);
+function tag(s){let c=['Settled','Approved'].includes(s)?'good':['Pending Approval','Processing'].includes(s)?'warn':['Failed','Rejected'].includes(s)?'bad':'';return `<span class="tag ${c}">${s}</span>`}
+async function refresh(){try{let d=await fetch('/api/dashboard').then(r=>r.json());document.getElementById('total').textContent=d.total_payments;document.getElementById('value').textContent=fmt(d.total_value);document.getElementById('risk').textContent=d.high_risk;document.getElementById('pending').textContent=d.pending_approval;
+document.getElementById('rows').innerHTML=d.payments.map(p=>`<tr><td><b>${p.reference}</b><br><span class="muted">${p.beneficiary}</span></td><td>${fmt(p.amount)} ${p.currency}</td><td>${p.risk_score.toFixed(1)} / 100<br>${tag(p.risk_level)}</td><td>${tag(p.status)}</td><td><div class="actions">${p.status==='Pending Approval'?`<button onclick="act(${p.id},'approve')">Approve</button><button class="danger" onclick="act(${p.id},'reject')">Reject</button>`:''}${p.status==='Failed'?`<button onclick="act(${p.id},'retry')">Diagnose & retry</button>`:''}<button class="secondary" onclick="detail(${p.id})">Details</button></div></td></tr>`).join('')||'<tr><td colspan="5">No payments yet. Load demo data or create one.</td></tr>';
+let a=await fetch('/api/audit').then(r=>r.json());document.getElementById('audit').innerHTML=a.slice(0,8).map(x=>`<p><b>${x.action}</b> · ${x.payment_reference}<br><small>${x.details}</small></p>`).join('')||'No events yet.'}catch(e){console.error(e)}}
+async function seed(){await fetch('/api/demo/seed',{method:'POST'});refresh()}
+async function act(id,action){let r=await fetch(`/api/payments/${id}/${action}`,{method:'POST'});let d=await r.json();if(!r.ok)alert(d.detail||'Action failed');refresh()}
+async function detail(id){let p=await fetch(`/api/payments/${id}`).then(r=>r.json());alert(`Reference: ${p.reference}\nRisk: ${p.risk_score} (${p.risk_level})\nRoute: ${p.recommended_route}\nPolicy flags: ${p.policy_flags}\nExplanation: ${p.explanation}`)}
+document.getElementById('paymentForm').addEventListener('submit',async e=>{e.preventDefault();let f=new FormData(e.target),d=Object.fromEntries(f.entries());['amount','country_risk','corridor_failure_rate','transaction_frequency'].forEach(k=>d[k]=Number(d[k]));d.is_new_beneficiary=d.is_new_beneficiary==='true';d.invoice_match=true;let r=await fetch('/api/payments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});let p=await r.json();document.getElementById('result').innerHTML=r.ok?`<p>${tag(p.status)} Risk ${p.risk_score}/100 · ${p.risk_level}<br><small>${p.reference} · Route: ${p.recommended_route}</small></p>`:`<p class="tag bad">${p.detail||'Could not create payment'}</p>`;refresh()});
+refresh();
+</script></body></html>
